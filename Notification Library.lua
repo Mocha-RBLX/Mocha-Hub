@@ -13,19 +13,21 @@ local PropertyTweenOut = {
 }
 
 if game:GetService("CoreGui"):FindFirstChild("MochaNotif") then
-  print("Already Have Mocha Notification In CoreGui")
+  warn("Mocha Notification Library is already in CoreGui!")
+  game.CoreGui.MochaNotif.Container.Position = UDim2.new(1, -350, 0.2, 0)
 else
   local MochaNotif = Instance.new("ScreenGui")
   MochaNotif.Name = "MochaNotif"
   MochaNotif.Parent = game:GetService("CoreGui");
   MochaNotif.IgnoreGuiInset = false
+  MochaNotif.ResetOnSpawn = false
 
   local Container = Instance.new("Frame")
   Container.Name = "Container"
   Container.Parent = MochaNotif
   Container.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
   Container.BackgroundTransparency = 1
-  Container.Position = UDim2.new(7.18398718e-09, 20, 0.06161616, -20)
+  Container.Position = UDim2.new(1, -350, 0.2, 0)
   Container.Size = UDim2.new(0.239999995, 0, 0.800000012, 0)
 
   local UIListLayout = Instance.new("UIListLayout")
@@ -57,7 +59,7 @@ function FadeInProperty(o)
 	}):Play();
 end
 
-function Mocha:Create(properties)
+function Mocha:CreateNotif(properties)
     local NotificationFrame = Instance.new("Frame")
     local UICorner = Instance.new("UICorner")
     local NotificationTitle = Instance.new("TextLabel")
@@ -98,7 +100,7 @@ function Mocha:Create(properties)
     NotificationDescription.TextYAlignment = Enum.TextYAlignment.Top
     NotificationDescription.TextTransparency = 1
 
-    NotificationTitle.Text = properties.Title or "Mocha Hub"
+    NotificationTitle.Text = properties.Title or "Neon Hub"
     NotificationDescription.Text = properties.Description or "nil"
 
     DropShadow(NotificationFrame)
@@ -118,20 +120,21 @@ function Mocha:Create(properties)
     local duration = properties.Duration or 5
 
     function Close()
+		local Prop = PropertyTweenOut[string.sub(NotificationTitle.ClassName, 1, 4)];
+    TweenService:Create(NotificationTitle, TweenInfo.new(0.25, TweenStyle, TweenDirection), {
+		[Prop] = 1;
+	}):Play();
+	wait(0.4)
+	local Prop = PropertyTweenOut[string.sub(NotificationDescription.ClassName, 1, 4)];
+    TweenService:Create(NotificationDescription, TweenInfo.new(0.25, TweenStyle, TweenDirection), {
+		[Prop] = 1;
+	  }):Play();
+	wait(0.4)
       local Prop = PropertyTweenOut[string.sub(NotificationFrame.ClassName, 1, 4)];
     TweenService:Create(NotificationFrame, TweenInfo.new(0.25, TweenStyle, TweenDirection), {
 		[Prop] = 1;
 	}):Play();
-  local Prop = PropertyTweenOut[string.sub(NotificationTitle.ClassName, 1, 4)];
-    TweenService:Create(NotificationTitle, TweenInfo.new(0.25, TweenStyle, TweenDirection), {
-		[Prop] = 1;
-	}):Play();
   wait(0.4)
-      local Prop = PropertyTweenOut[string.sub(NotificationDescription.ClassName, 1, 4)];
-    TweenService:Create(NotificationDescription, TweenInfo.new(0.25, TweenStyle, TweenDirection), {
-		[Prop] = 1;
-	  }):Play();
-    wait(0.4)
   NotificationFrame:Destroy()
     end
     if properties.Accept then
@@ -185,7 +188,6 @@ function Mocha:Create(properties)
     }):Play();
       properties.Accept.Callback = properties.Accept.Callback or function() end
       TextButton.MouseButton1Down:Connect(function()
-        properties.Accept.Callback()
         spawn(function()
           local Prop = PropertyTweenOut[string.sub(Accept.ClassName, 1, 4)];
     TweenService:Create(Accept, TweenInfo.new(0.25, TweenStyle, TweenDirection), {
@@ -203,10 +205,5 @@ function Mocha:Create(properties)
       Close()
     end
 end
-
-Mocha.Create(a,{
-  Title = "Testing UI",
-  Description = "All Loaded! Press V to open the UI"
-})
 
 return Mocha
