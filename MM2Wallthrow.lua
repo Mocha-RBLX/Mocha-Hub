@@ -40,14 +40,4 @@ GameMetaTable.__namecall = newcclosure(function(object, ...)
    return OldGameMetaTableNamecall(object, unpack(Arguments))
 end)
 
-local Lib = {}
-
-function Lib:SlientAim(bool)
-  if bool then 
-     setreadonly(GameMetaTable, true)  
-  else
-     setreadonly(GameMetaTable, false)
-  end
-end
-
-return Lib
+setreadonly(GameMetaTable, true)
